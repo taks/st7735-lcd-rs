@@ -242,6 +242,21 @@ where
         self.set_address_window(sx, sy, ex, ey)?;
         self.write_pixels_buffered(colors)
     }
+
+    pub fn set_pixels_slice(
+        &mut self,
+        sx: u16,
+        sy: u16,
+        ex: u16,
+        ey: u16,
+        colors: &[u8],
+    ) -> Result<(), ()> {
+        debug_assert_eq!(((ex - sx + 1) * (ey - sy + 1) * 2) as usize, colors.len());
+        self.set_address_window(sx, sy, ex, ey)?;
+        self.write_command(Instruction::RAMWR, &[])?;
+        self.start_data()?;
+        self.write_data(colors)
+    }
 }
 
 #[cfg(feature = "graphics")]
